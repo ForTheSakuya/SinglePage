@@ -1,0 +1,37 @@
+#root {
+    height: 100%;
+    .web-upload {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+
+        .ant-upload-drag {    
+            position: fixed;
+            top: 0;
+            left: 0;
+            // cursor: unset;
+            .ant-upload-drag-container {    
+                height: 100%;
+                .btns {
+                    position: absolute;
+                    top: 45%;
+                    width: 61.8%;
+                    left: 19.1%;
+                    // cursor: pointer;
+                    p {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        font-size: 22px;
+                    }
+
+                    &.hadList {
+                        top: 20px;
+                    }
+                    transition: top 1s;
+                }
+            }
+        }
+    }
+}
