@@ -10,7 +10,6 @@
             position: fixed;
             top: 0;
             left: 0;
-            // cursor: unset;
             .ant-upload-drag-container {    
                 height: 100%;
                 .btns {
@@ -18,7 +17,6 @@
                     top: 45%;
                     width: 61.8%;
                     left: 19.1%;
-                    // cursor: pointer;
                     p {
                         display: flex;
                         justify-content: center;
@@ -30,6 +28,50 @@
                         top: 20px;
                     }
                     transition: top 1s;
+                }
+            }
+        }
+
+        .file-list {
+            width: 300px;
+            padding-left: 8px;
+            z-index: 2;
+            max-height: calc(~ "100% - 150px");
+            position: absolute;
+            top: 150px;
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 1s;
+            &.active{
+                opacity: 1;
+            }
+
+            .file-item {
+                min-height: 44px;
+                .item-info {
+                    display: flex;
+                    padding: 0 4px 0 2px;
+                    margin-right: 10px;
+                    &:hover{
+                        background: rgb(230, 247, 255);
+                    }
+                    .title {
+                        flex: 1;
+                        max-width: 265px;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                    }
+                    .btn {
+                        position: relative;
+                        cursor: pointer;
+                        i{
+                            font-size: 20px;
+                            position: absolute;
+                            right: -11px;
+                            top: -6px;
+                        }
+                    }
                 }
             }
         }

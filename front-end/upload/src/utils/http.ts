@@ -13,7 +13,7 @@ interface IResponse<T> {
 }
 
 const http = axios.create({
-    baseURL: '',
+    baseURL: 'https://localhost:5001',
     withCredentials: true
 });
 
