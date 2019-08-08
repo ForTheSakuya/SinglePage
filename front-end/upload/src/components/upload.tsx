@@ -75,7 +75,8 @@ class WebUpload extends React.Component<any, IWebUploadState> {
             chunkIndex: 0,
             chunkSize: this.chunkSize,
             status: 'init',
-            uid: file.uid
+            type: this.getEntityType(file),
+            uid: ''
         }
         this.state.fileList.push(task)
         this.onFileListChange(this.state.fileList);
@@ -96,12 +97,17 @@ class WebUpload extends React.Component<any, IWebUploadState> {
         }
 
         form.append('fileData', data);
-        form.append('fileId', file.uid);
+        if (task.uid) {
+            form.append('fileId', task.uid);
+        }
+        form.append('filePath', task.filePath || '');
         form.append('fileName', file.name);
         form.append('chunkIndex', task.chunkIndex);
         form.append('chunkTotal', task.chunkTotal);
         form.append('chunkSize', task.chunkSize + '');
         form.append('status', task.status);
+        form.append('size', task.sizeTotal);
+        form.append('entityType', task.type);
         form.append('md5', '');
 
         http.post('/api/upload/multipart', form).then(res => {
@@ -112,6 +118,8 @@ class WebUpload extends React.Component<any, IWebUploadState> {
                     return;
                 }
                 task.chunkIndex++
+                task.uid = res.data.fileId
+                task.filePath = res.data.filePath
                 if (task.chunkIndex === task.chunkTotal) {
                     task.status = 'done'
                     message.success(`${file.name} 文件上传成功。`);// file uploaded successfully.
@@ -122,9 +130,10 @@ class WebUpload extends React.Component<any, IWebUploadState> {
             } else {
                 task.status = 'error'
             }
-            const item = this.state.fileList.find(s => s.uid === task.uid)
-            item.percent = Math.floor((task.chunkIndex / task.chunkTotal) * 100)
-            item.status = task.status
+            task.percent = Math.floor((task.chunkIndex / task.chunkTotal) * 100)
+            this.onFileListChange(this.state.fileList);
+        }).catch(() => {
+            task.status = 'error'
             this.onFileListChange(this.state.fileList);
         });
     }
@@ -141,6 +150,20 @@ class WebUpload extends React.Component<any, IWebUploadState> {
             return 'exception'
         }
         return
+    }
+
+    private getEntityType(file: any) {
+        if (file.type.indexOf('video') > -1) {
+            return 'Clip'
+        } else if (file.type.indexOf('image') > -1) {
+            return 'Picture'
+        } else if (file.type.indexOf('audio') > -1) {
+            return 'Audio'
+        } else if (file.type.indexOf('text') > -1) {
+            return 'Document'
+        } else {
+            return 'Other'
+        }
     }
 }
 
