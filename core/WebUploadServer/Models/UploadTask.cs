@@ -1,3 +1,5 @@
+using System;
+using System.IO;
 using Microsoft.AspNetCore.Http;
 
 namespace WebUploadServer.Models
@@ -11,7 +13,7 @@ namespace WebUploadServer.Models
         /// <summary>
         /// 文件Id
         /// </summary>
-        public string FileId { get; set; }
+        public string FileId { get; set; } = Guid.NewGuid().ToString("N");
         /// <summary>
         /// 文件名
         /// </summary>
@@ -32,5 +34,17 @@ namespace WebUploadServer.Models
         /// MD5
         /// </summary>
         public string Md5 { get; set; }
+        public string EntityType { get; set; }
+        public long Size { get; set; }
+
+
+        public string CreateRelativePath()
+        {
+            var now = DateTime.Now;
+            return Path.Combine(EntityType,
+                now.ToString("yyyyMMdd"),
+                FileId,
+                FileName);
+        }
     }
 }

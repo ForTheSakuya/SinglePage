@@ -1,6 +1,8 @@
 
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using WebUploadServer.Bll;
 using WebUploadServer.Models;
 
@@ -11,8 +13,15 @@ namespace WebUploadServer.Controllers
     [ApiController]
     public class UploadController : ControllerBase
     {
+        private readonly IOptions<Custom> _configuration;
+        public UploadController(IOptions<Custom> customSettings)
+        {
+            _configuration = customSettings;
+        }
+
         private UploadBll _uploader;
-        private UploadBll Uploader => _uploader ?? (_uploader = new UploadBll());
+        private UploadBll Uploader => _uploader ??
+                                      (_uploader = new UploadBll(_configuration));
 
         /// <summary>
         /// 分片上传
@@ -27,9 +36,9 @@ namespace WebUploadServer.Controllers
             return result;
         }
 
-        public ActionResult Upolad()
+        public ActionResult<string> Upolad()
         {
-            return NoContent();
+            return JsonConvert.SerializeObject(_configuration);
         }
 
         [HttpPost, Route("")]
