@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using WebUploadServer.Models;
 
 namespace WebUploadServer
@@ -20,7 +21,7 @@ namespace WebUploadServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<Custom>(Configuration.GetSection("Custom"));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddCors(cors => cors.AddPolicy("mam-cors", builder =>
              {
                  builder.AllowAnyOrigin()
@@ -29,26 +30,29 @@ namespace WebUploadServer
                  .AllowAnyMethod()
                  .AllowCredentials();
              }));
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
+
             app.UseCors("mam-cors");
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
+                
             app.UseHttpsRedirection();
-            app.UseMvc();
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }
